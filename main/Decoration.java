@@ -6,26 +6,14 @@ import java.awt.image.BufferedImage;
 
 import imgs.Img;
 
-public class TextBox {
+public class Decoration {
     
     private Point location;
-    private boolean visible;
+    private Img currentImg;
 
-    public TextBox(Point location){
+    public Decoration(Point location){
         this.location = location;
-        this.visible = true;
-    }
-
-    public void setInvisible(){
-        this.visible = false;
-    }
-
-
-    public void ping(Game game){
-        if(!game.getSprite().location().equals(new Point(8, 8))){
-            setInvisible();
-            game.startGame();
-        }
+        this.currentImg = Img.flower;
     }
 
     public Point location(){
@@ -33,7 +21,7 @@ public class TextBox {
     }
 
     void draw(Graphics g, Point center, Dimension size){
-        if(visible) drawImg(Img.levelone.image, g, center, size, 4);
+        drawImg(currentImg.image, g, center, size, 5);
     }
 
 

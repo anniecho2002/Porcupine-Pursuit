@@ -14,16 +14,6 @@ public interface EnemyState {
      * @param game  The current game.
      */
     void ping(Enemy enemy, Game game);
-
-    /**
-     * Helper method for determining if the images should be flipped or not.
-     * 
-     * @return True = flipped, False = not flipped.
-     */
-    default boolean flipped(Enemy enemy, Game game) {
-        double distance = game.getSprite().location().x() - enemy.location().x();
-        return (distance > 0) ? false : true;
-    }
 }
 
 /**
@@ -172,6 +162,13 @@ record RoamingState() implements EnemyState {
     static int ticks;
     static Point randPoint = new Point(Math.random() * 16, Math.random() * 16);
 
+    
+    double findDistance(Point a, Point b){
+        double distX = Math.abs(a.x() - b.x());
+        double distY = Math.abs(a.y() - b.y());
+        return (distX + distY) / 2;
+    }
+
     @Override
     public void ping(Enemy enemy, Game game) {
 
@@ -187,7 +184,7 @@ record RoamingState() implements EnemyState {
         }
 
         // Change point to walk to after time.
-        if (ticks++ == 50) {
+        if (ticks++ == 50 || findDistance(enemy.location(), randPoint) < 3) {
             randPoint = new Point(Math.random() * 16, Math.random() * 16); // Sets random point for monster to follow
             ticks = 0;
         }

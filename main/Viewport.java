@@ -71,6 +71,7 @@ class Viewport extends JPanel {
         game.cells().performActionInRange(center().toCoord(), 50, cell -> cell.draw(g, center, size)); // Draws all cells.
         game.getEntities().forEach(e -> e.draw(g, center, size)); // Draws all the entities (sprites, enemies, collectables).
         game.getCollectables().forEach(e -> e.draw(g, center, size)); // Draws all the collectables.
+        game.getDecorations().forEach(e -> e.draw(g, center, size));
         game.getSprite().draw(g, center, size);
         for (int i = 0; i < game.getHealth(); i++){
             drawImg(Img.heart.image, g, new Point(40 + (i * 45), 40), size, 2);

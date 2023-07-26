@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -55,6 +56,7 @@ class App extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
         setResizable(false);
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setTitle("Porcupine Pursuit");
         home();
         addWindowListener(new WindowAdapter() {
@@ -85,87 +87,78 @@ class App extends JFrame {
      */
     private JLabel makeLabel(String text) {
         JLabel temp = new JLabel(text);
-        temp.setForeground(COLOR_THEME);
+        temp.setForeground(Color.WHITE);
         temp.setFont(FONT_THEME);
         return temp;
     }
 
-
-    /**
-     * Creates a home page JPanel.
-     */
-    private void home() {
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
-
+    private JLabel getTextBox(){
         Icon icon = new ImageIcon("imgs/textbox.gif");
         JLabel label = new JLabel();
         label.setIcon(icon);
-        
+        return label;
+    }
 
 
-        // Home panel for the buttons.
+    private void home() {
+        ImageIcon backgroundImage = new ImageIcon("imgs/home_background.png");
         JPanel homePanel = new JPanel();
-        homePanel.setBounds(0, HEIGHT - 90, WIDTH, HEIGHT - 20);
-        homePanel.requestFocus();
+        homePanel.setLayout(null);
+        JLabel backgroundLabel = new JLabel(backgroundImage);
+        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
 
+        // Textbox image
+        JLabel tb = getTextBox();
+        tb.setBounds(WIDTH/2 - 120, HEIGHT/2 + 100, 300, 126);
+
+        
         // Buttons to be displayed on the main home screen.
         JButton start = makeButton("START GAME");
         JButton select = makeButton("SELECT KEYS");
-        homePanel.add(start);
-        homePanel.add(select);
-
-        // Panel for the animated textbox.
-        JPanel textbox = new JPanel();
-        textbox.add(label, BorderLayout.CENTER);
-
-        // Panel for the bottom textbox.
-        JPanel bottomPanel = new JPanel();
-        textbox.add(new JLabel());
-
+        start.setBounds(WIDTH/2 - 120, 580, 142, 35);
+        select.setBounds(WIDTH/2 + 30, 580, 142, 35);
 
         // Laying out buttons in a top and bottom panel.
         start.addActionListener((e) -> play());
         select.addActionListener((e) -> select());
 
-        add(bottomPanel, BorderLayout.SOUTH);
-        add(textbox, BorderLayout.CENTER);
-        add(homePanel, BorderLayout.NORTH);
+        homePanel.add(start);
+        homePanel.add(select);
+        homePanel.add(tb);
+        homePanel.add(backgroundLabel);
+        this.add(homePanel);
 
+        this.setPreferredSize(new Dimension(backgroundImage.getIconWidth(), backgroundImage.getIconHeight()));
+        this.pack();
+        this.setVisible(true);
 
         // To be executed when the home is closed.
         closePhase.run();
         closePhase = () -> {
             remove(homePanel);
-            remove(textbox);
-            remove(bottomPanel);
+            remove(start);
+            remove(select);
+            remove(backgroundLabel);
         };
-
-        // Adding ActionListeners to button to be executed when pressed.
-
-        pack();
     }
 
 
-    /*
-     * Creates a JPanel for selecting new keys.
-     */
     private void select() {
 
-        // Creating the select panel.
+        ImageIcon backgroundImage = new ImageIcon("imgs/home_background.png");
         JPanel selectPanel = new JPanel();
-        selectPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        selectPanel.setFocusable(true);
-        
+        selectPanel.setLayout(null);
+        JLabel backgroundLabel = new JLabel(backgroundImage);
+        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+
 
         // Creating a back button that returns to home page.
         JButton back = makeButton("BACK TO HOME");
-        selectPanel.add(back);
-        add(selectPanel, BorderLayout.CENTER);
+        back.setBounds(WIDTH/2 - 45, 580, 142, 35);
         back.addActionListener(e -> home());
-
-
+        
+    
         // Creating the combo boxes for selecting new keys.
-        JPanel comboPanel = new JPanel();
         ArrayList<JComboBox> boxes = new ArrayList<JComboBox>();
         ArrayList<JLabel> labels = new ArrayList<JLabel>();
 
@@ -174,23 +167,36 @@ class App extends JFrame {
             boxes.add(new JComboBox(options));
             labels.add(makeLabel(labelNames[i]));
             boxes.get(i).setSelectedIndex(defaultKeys[i]);
-            boxes.get(i).setBounds(130 * i, 40, 100, 50);
-            labels.get(i).setBounds(130 * i + 5, 25, 130, 50);
-            comboPanel.add(BorderLayout.CENTER, labels.get(i));
-            comboPanel.add(BorderLayout.CENTER, boxes.get(i));
+
+            labels.get(i).setBounds(80 + 200 * i, 540, 100, 50);
+            boxes.get(i).setBounds(130 + 200 * i, 540, 90, 50);
+            
+            selectPanel.add(labels.get(i));
+            selectPanel.add(boxes.get(i));
         }
-        add(comboPanel, BorderLayout.SOUTH);
-        boxes.forEach((i) -> i.addActionListener(
-                e -> defaultKeys[boxes.indexOf(i)] = Arrays.asList(options).indexOf(i.getSelectedItem())));
+        boxes.forEach((i) -> i.addActionListener(e -> defaultKeys[boxes.indexOf(i)] = Arrays.asList(options).indexOf(i.getSelectedItem())));
         
+
+        selectPanel.add(back);
+        selectPanel.add(backgroundLabel);
+        add(selectPanel);
+
+        this.setPreferredSize(new Dimension(backgroundImage.getIconWidth(), backgroundImage.getIconHeight()));
+        this.pack();
+        this.setVisible(true);
 
         closePhase.run();
         closePhase = () -> {
-            remove(selectPanel);
-            remove(comboPanel);
-            remove(back);
-            boxes.forEach(e -> remove(e));
-            labels.forEach(e -> remove(e));
+            SwingUtilities.invokeLater(() -> {
+                boxes.forEach(e -> selectPanel.remove(e));
+                labels.forEach(e -> selectPanel.remove(e));
+                selectPanel.revalidate();
+                selectPanel.repaint();
+                remove(selectPanel);
+                remove(back);
+                revalidate();
+                repaint();
+            });
         };
         pack();
     }
@@ -280,10 +286,10 @@ class App extends JFrame {
             return new ArrayList<>(List.of(
             new Collectable(new Point(1, 1)), new Collectable(new Point(1, 15)),
             new Collectable(new Point(15, 15)), new Collectable(new Point(15, 1)),
-            new Collectable(new Point(4, 4), new MovingCollectable()),
-            new Collectable(new Point(12, 12), new MovingCollectable()),
-            new Collectable(new Point(4, 12), new MovingCollectable()),
-            new Collectable(new Point(12, 4), new MovingCollectable())
+            new Collectable(new Point(5, 5), new MovingCollectable()),
+            new Collectable(new Point(11, 11), new MovingCollectable()),
+            new Collectable(new Point(5, 11), new MovingCollectable()),
+            new Collectable(new Point(11, 5), new MovingCollectable())
             ));
         }
         return null;

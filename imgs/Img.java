@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
 public enum Img{
-  home_background, heart, orange,
+  home_background, heart, orange, flower,
   levelone,
   grass1, grass2, grass3, grass4, grass5, 
   bush0, bush1, bush2, bush3, bush4,

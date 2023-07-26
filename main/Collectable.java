@@ -26,7 +26,7 @@ public class Collectable implements Entity {
     /*
      * The speed that the collectable travels.
      */
-    public final double speed = 0.082d;
+    public final double speed = 0.09d;
 
     
     /**
@@ -35,6 +35,8 @@ public class Collectable implements Entity {
     int ticks = 0;
     double randTime = Math.random() * 50;
     Point randPoint = new Point(Math.random() * 16, Math.random() * 16);
+
+    public boolean flipped = false;
 
 
 
@@ -66,7 +68,7 @@ public class Collectable implements Entity {
      */
     @Override
     public void draw(Graphics g, Point center, Dimension size) {
-        drawImg(img.image, g, center, size, 3.5, false);
+        drawImg(img.image, g, center, size, 3.5, flipped);
     }
 
 
@@ -162,6 +164,9 @@ record MovingCollectable() implements CollectableState{
             game.getSprite().grow();
             game.remove(c);
         }
+
+        double distance = c.getRandPoint().x() - c.location().x();
+        c.flipped = (distance > 0) ? false : true;
     }
 
 }

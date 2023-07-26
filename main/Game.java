@@ -1,5 +1,6 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,6 +14,7 @@ public class Game {
     private Sprite sprite;
     private List<Entity> entities;
     private List<Entity> collectables;
+    private List<Decoration> decorations;
     private Map cells;
     private Runnable onWin;
     private Runnable onLose;
@@ -21,16 +23,16 @@ public class Game {
     private boolean startGame = false;
 
 
-    public Game(Sprite sprite, List<Entity> entities, List<Entity> collectables, Map cells, 
-                Runnable onWin, Runnable onLose, TextBox textBox){
+    public Game(Sprite sprite, List<Entity> entities, List<Entity> collectables, List<Decoration> decorations,
+                Map cells, Runnable onWin, Runnable onLose, TextBox textBox){
         this.sprite = sprite;
         this.entities = entities;
         this.collectables = collectables;
+        this.decorations = decorations;
         this.cells = cells;
         this.onWin = onWin;
         this.onLose = onLose;
         this.textBox = textBox;
-        System.out.println(textBox.location().x() + " " + textBox.location().y());
     }
 
     public Sprite getSprite(){
@@ -43,6 +45,10 @@ public class Game {
 
     public List<Entity> getCollectables(){
         return this.collectables;
+    }
+
+    public List<Decoration> getDecorations(){
+        return this.decorations;
     }
 
     public TextBox getTextBox(){
@@ -90,16 +96,13 @@ public class Game {
         getTextBox().ping(this);
         if(!startGame) return;
         Sprite s = getSprite();
-        if (s.getGrowthIndex() < 0)
-            onGameOver();
+        if (s.getGrowthIndex() < 0) onGameOver();
 
         // Check if all the monsters are still there
         // If there are no more monsters
         getEntities().forEach(e -> e.ping(this));
         getCollectables().forEach(e -> e.ping(this));
-        boolean end = getEntities().stream().noneMatch(e -> e instanceof Enemy);
-        if (end) {
-            onNextLevel();
-        }
+        boolean lose = getCollectables().stream().noneMatch(e -> e instanceof Collectable);
+        if (lose) onGameOver();
     }
 }
