@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,13 +28,15 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
 class App extends JFrame {
 
     // Fields for GUI.
     private int WIDTH = 900;
     private int HEIGHT = 680;
-    private Color COLOR_THEME = new Color(74, 115, 64);
+    // private Color COLOR_THEME = new Color(74, 115, 64);
+    private Color COLOR_THEME = new Color(41,8,41);
     private Font FONT_THEME = new Font("Arial Black", Font.BOLD, 12);
 
 
@@ -58,7 +62,12 @@ class App extends JFrame {
         setResizable(false);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setTitle("Porcupine Pursuit");
-        home();
+
+        ImageIcon backgroundImage = new ImageIcon("imgs/home_background.png");
+        JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT);
+        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+
+        home(backgroundLabel, backgroundImage);
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 closePhase.run();
@@ -74,9 +83,14 @@ class App extends JFrame {
      */
     private JButton makeButton(String text) {
         JButton temp = new JButton(text);
+        temp.setOpaque(true);
+        temp.setBorder(null);
         temp.setForeground(COLOR_THEME);
         temp.setFont(FONT_THEME);
+        temp.setBackground(new Color(250, 242, 210));
+        temp.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         return temp;
+
     }
 
 
@@ -100,12 +114,13 @@ class App extends JFrame {
     }
 
 
-    private void home() {
-        ImageIcon backgroundImage = new ImageIcon("imgs/home_background.png");
+    private void home(JLabel backgroundLabel, ImageIcon backgroundImage) {
         JPanel homePanel = new JPanel();
         homePanel.setLayout(null);
-        JLabel backgroundLabel = new JLabel(backgroundImage);
-        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+
+        /* ImageIcon titleImage = new ImageIcon("imgs/title.png");
+        JLabel titleLabel = new JLabel(titleImage);
+        titleLabel.setBounds(40, 0, titleImage.getIconWidth(), backgroundImage.getIconHeight()); */
 
         // Textbox image
         JLabel tb = getTextBox();
@@ -120,8 +135,9 @@ class App extends JFrame {
 
         // Laying out buttons in a top and bottom panel.
         start.addActionListener((e) -> play());
-        select.addActionListener((e) -> select());
+        select.addActionListener((e) -> select(backgroundLabel, backgroundImage));
 
+        // homePanel.add(titleLabel);
         homePanel.add(start);
         homePanel.add(select);
         homePanel.add(tb);
@@ -143,19 +159,21 @@ class App extends JFrame {
     }
 
 
-    private void select() {
+    private void select(JLabel backgroundLabel, ImageIcon backgroundImage) {
 
-        ImageIcon backgroundImage = new ImageIcon("imgs/home_background.png");
         JPanel selectPanel = new JPanel();
         selectPanel.setLayout(null);
-        JLabel backgroundLabel = new JLabel(backgroundImage);
-        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+
+
+        ImageIcon titleImage = new ImageIcon("imgs/title.png");
+        JLabel titleLabel = new JLabel(titleImage);
+        titleLabel.setBounds(40, 0, titleImage.getIconWidth(), backgroundImage.getIconHeight());
 
 
         // Creating a back button that returns to home page.
         JButton back = makeButton("BACK TO HOME");
         back.setBounds(WIDTH/2 - 45, 580, 142, 35);
-        back.addActionListener(e -> home());
+        back.addActionListener(e -> home(backgroundLabel, backgroundImage));
         
     
         // Creating the combo boxes for selecting new keys.
@@ -259,7 +277,6 @@ class App extends JFrame {
             timer.stop();
             remove(viewport);
         };
-
 
         add(BorderLayout.CENTER, viewport);
         setPreferredSize(getSize());
