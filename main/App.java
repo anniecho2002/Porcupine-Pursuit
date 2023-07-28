@@ -2,12 +2,18 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Shape;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -29,13 +35,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.JButton;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.RoundRectangle2D;
 
 class App extends JFrame {
 
     // Fields for GUI.
     private int WIDTH = 900;
     private int HEIGHT = 680;
-    // private Color COLOR_THEME = new Color(74, 115, 64);
     private Color COLOR_THEME = new Color(41,8,41);
     private Font FONT_THEME = new Font("Arial Black", Font.BOLD, 12);
 
@@ -88,7 +99,8 @@ class App extends JFrame {
         temp.setForeground(COLOR_THEME);
         temp.setFont(FONT_THEME);
         temp.setBackground(new Color(250, 242, 210));
-        temp.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        temp.setBorderPainted(true);
+        temp.setBorder(new RoundedBorder(10));
         return temp;
 
     }
@@ -105,6 +117,7 @@ class App extends JFrame {
         temp.setFont(FONT_THEME);
         return temp;
     }
+
 
     private JLabel getTextBox(){
         Icon icon = new ImageIcon("imgs/textbox.gif");
@@ -298,6 +311,7 @@ class App extends JFrame {
         return null;
     }
 
+    
     static ArrayList<Entity> getLevelCollectables(int level){
         if(level == 1){
             return new ArrayList<>(List.of(
@@ -312,3 +326,31 @@ class App extends JFrame {
         return null;
     }
 }
+
+class RoundedBorder implements Border {
+
+    private int radius;
+
+
+    RoundedBorder(int radius) {
+        this.radius = radius;
+    }
+
+
+    public Insets getBorderInsets(Component c) {
+        return new Insets(this.radius+1, this.radius+1, this.radius+2, this.radius);
+    }
+
+
+    public boolean isBorderOpaque() {
+        return false;
+    }
+
+
+    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+        g.drawRoundRect(x, y, width-1, height-1, radius, radius);
+    }
+}
+
+
+
