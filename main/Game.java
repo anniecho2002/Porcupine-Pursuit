@@ -14,7 +14,6 @@ public class Game {
     private Sprite sprite;
     private List<Entity> entities;
     private List<Entity> collectables;
-    private List<Decoration> decorations;
     private Map cells;
     private Runnable onWin;
     private Runnable onLose;
@@ -23,12 +22,11 @@ public class Game {
     private boolean startGame = false;
 
 
-    public Game(Sprite sprite, List<Entity> entities, List<Entity> collectables, List<Decoration> decorations,
+    public Game(Sprite sprite, List<Entity> entities, List<Entity> collectables,
                 Map cells, Runnable onWin, Runnable onLose, TextBox textBox){
         this.sprite = sprite;
         this.entities = entities;
         this.collectables = collectables;
-        this.decorations = decorations;
         this.cells = cells;
         this.onWin = onWin;
         this.onLose = onLose;
@@ -45,10 +43,6 @@ public class Game {
 
     public List<Entity> getCollectables(){
         return this.collectables;
-    }
-
-    public List<Decoration> getDecorations(){
-        return this.decorations;
     }
 
     public TextBox getTextBox(){

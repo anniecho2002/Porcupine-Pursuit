@@ -20,16 +20,9 @@ record Level(Game game, Controller controller){
 
     // Other elements for visual effect.
     TextBox tb = new TextBox(new Point(8, 9.5));
-    /*ArrayList<Decoration> decorations = new ArrayList<>(List.of(
-      new Decoration(new Point(7.5, 7)),
-      new Decoration(new Point(9, 6.5)),
-      new Decoration(new Point(8.4, 8.2))
-    )); */
-
-    ArrayList<Decoration> decorations = new ArrayList<>(List.of());
 
     // Creating a new Level object to return.
-    Game game = new Game(sprite, monsters, collectables, decorations, cells, onWin, onLose, tb);
+    Game game = new Game(sprite, monsters, collectables, cells, onWin, onLose, tb);
     sprite.addGame(game);
     return new Level(game, controller);
   }

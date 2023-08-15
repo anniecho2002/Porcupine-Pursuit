@@ -26,4 +26,11 @@ record Point(double x, double y){
   public Coordinate toCoord(){
     return new Coordinate((int)(x-0.5d), (int)(y-0.5d));
   }
+
+      // Subtract method to calculate the vector between two points
+      public Point subtract(Point other) {
+        double dx = this.x - other.x;
+        double dy = this.y - other.y;
+        return new Point(dx, dy);
+    }
 }

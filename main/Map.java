@@ -47,7 +47,7 @@ class Map {
      * @return A grass cell with different background.
      */
     private Img getGrassCell(int num, boolean rand) {
-        Img[] cellOptions = { Img.grass1, Img.grass2, Img.grass3, Img.grass4, Img.grass5 };
+        Img[] cellOptions = { Img.grass0, Img.grass1, Img.grass2, Img.grass3, Img.grass4 };
         int randomNumber = rand ? random.nextInt(5) : num;
         if (randomNumber < 0 || randomNumber > 4) return Img.grass1;
         else return cellOptions[randomNumber];

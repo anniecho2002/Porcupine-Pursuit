@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -17,7 +19,8 @@ import imgs.Img;
 public class StartPanel extends JLabel implements ActionListener {
 
     // Start panel fields
-    private Img backgroundImg = Img.home_background;
+    private Img backgroundImg;
+    private String animation;
     Timer timer; 
 
 
@@ -26,8 +29,14 @@ public class StartPanel extends JLabel implements ActionListener {
      * @param width The app's width, to be set as label bounds.
      * @param height The app's height, to be set as label bounds.
      */
-    public StartPanel(int width, int height) {
+    public StartPanel(int width, int height, Img backgroundImg, String animation) {
+        this.backgroundImg = backgroundImg;
+        this.animation = animation;
         this.setBounds(0,0, width, height);
+        if(this.animation.equals("foxchase")){
+            spriteLocation = new Point(-180, 533);
+            enemyLocation = new Point(-120, 485);
+        }
         timer = new Timer(110, this);
         timer.start();
     }
@@ -41,10 +50,13 @@ public class StartPanel extends JLabel implements ActionListener {
         g2d.drawImage(backgroundImg.image, 0, 0, null); // Background image
         
         // Draw each element in the StartPanel.
+        if(animation.equals("foxchase")) scaledPaint(g2d, 0.35, currEnemy.image, enemyLocation, false);
+        else scaledPaint(g2d, 0.35, currEnemy.image, enemyLocation, true);
+
         scaledPaint(g2d, 0.4, currSprite.image, spriteLocation, false);
-        scaledPaint(g2d, 0.35, currEnemy.image, enemyLocation, true);
         scaledPaint(g2d, 1, clouds[0].image, cloud0Location, cloudsFlipped[0]);
         scaledPaint(g2d, 1, clouds[1].image, cloud1Location, cloudsFlipped[1]);
+        // scaledPaint(g2d, 1, title.image, titleLocation, false);
     }
 
 
@@ -80,6 +92,8 @@ public class StartPanel extends JLabel implements ActionListener {
         g2d.drawImage(scaledImage, scaledX, scaledY, null);
     }
 
+    
+
 
     /**
      * Change the coordinates and image of each element every tick of the timer.
@@ -87,9 +101,15 @@ public class StartPanel extends JLabel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        spriteAnimation();
-        enemyAnimation();
+        if(animation.equals("foxchase")){
+            spriteChaseAnimation();
+            enemyChaseAnimation();
+        } else{
+            spriteAnimation();
+            enemyAnimation();
+        }
         cloudAnimation();
+        // titleAnimation();
         repaint();
     }
 
@@ -98,14 +118,14 @@ public class StartPanel extends JLabel implements ActionListener {
 
 
     // Fields for sprite animation
-    private Point spriteLocation = new Point(-120, 530);
+    private Point spriteLocation = new Point(-120, 533);
     private Img currSprite = Img.foxRun0;
     private Img[] spriteWalking = {Img.foxRun0, Img.foxRun1, Img.foxRun2, Img.foxRun3, Img.foxRun4, Img.foxRun5, Img.foxRun6}; 
     private Img[] spriteIdle = {Img.foxIdle0, Img.foxIdle1, Img.foxIdle2, Img.foxIdle3, Img.foxIdle4}; 
     private int spriteCounter = 0;
 
     /**
-     * Determines how the sprite is animated.
+     * Determines how the sprite is animated for a normal animation.
      */
     private void spriteAnimation(){
         spriteCounter++;
@@ -125,6 +145,8 @@ public class StartPanel extends JLabel implements ActionListener {
     private Img currEnemy = Img.porcWalk0;
     private Img[] enemyWalking = {Img.porcWalk0, Img.porcWalk1, Img.porcWalk2, Img.porcWalk3, Img.porcWalk4}; 
     private Img[] enemyIdle = {Img.porcSleep0, Img.porcSleep1, Img.porcSleep2, Img.porcSleep3, Img.porcSleep4}; 
+    private Img[] enemyChase = {Img.porcWalk0, Img.porcWalk1, Img.porcWalk2, Img.porcWalk3, Img.porcWalk4,
+                                Img.porcSpike0, Img.porcSpike1, Img.porcSpike2, Img.porcSpike3, Img.porcSpike4, Img.porcSpike5, Img.porcSpike6, Img.porcSpike7};
     private int enemyCounter = 0;
     private boolean enemyComplete = false;
 
@@ -148,6 +170,8 @@ public class StartPanel extends JLabel implements ActionListener {
             }
         }
     }
+
+
 
 
     // Fields for cloud animation
@@ -201,4 +225,34 @@ public class StartPanel extends JLabel implements ActionListener {
         cloudsSpeed[num] = (int)(Math.random() * 4) + 1;
     }
 
+    private Point titleLocation = new Point(200, 200);
+    private Img title = Img.Congrats;
+    private int titleCounter;
+
+    private void titleAnimation(){
+        if(titleCounter++ % 5 == 0){
+            if(titleLocation.y() == 200) titleLocation = new Point(titleLocation.x(), titleLocation.y() + 10);
+            else titleLocation = new Point(titleLocation.x(), titleLocation.y() - 10);
+        }
+    }
+
+/*------ DRAWING THE CHASE ANIMATIONS -------------------------------------------------------------------------------------------------- */
+
+    /**
+     * Determines how the sprite is animated for a chase animation.
+     */
+    private void spriteChaseAnimation(){
+        if(++spriteCounter >= spriteWalking.length) spriteCounter = 0;
+        currSprite = spriteWalking[spriteCounter];
+        spriteLocation = new Point(spriteLocation.x() + 13, spriteLocation.y());
+    }
+
+    /**
+     * Determines how the sprite is animated for a chase animation.
+     */
+    private void enemyChaseAnimation(){
+        if(++enemyCounter >= enemyChase.length) enemyCounter = 0;
+        currEnemy = enemyChase[enemyCounter];
+        enemyLocation = new Point(enemyLocation.x() + 13, enemyLocation.y());
+    }
 }

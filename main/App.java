@@ -35,6 +35,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+
+import imgs.Img;
+
 import javax.swing.JButton;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -74,11 +77,12 @@ class App extends JFrame {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setTitle("Porcupine Pursuit");
 
-        ImageIcon backgroundImage = new ImageIcon("imgs/home_background.png");
-        JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT);
+        ImageIcon backgroundImage = new ImageIcon("imgs/home_background0.png");
+        JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT, Img.home_background0, "");
         backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
 
-        home(backgroundLabel, backgroundImage);
+        transition();
+        // home(backgroundLabel, backgroundImage);
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 closePhase.run();
@@ -119,14 +123,26 @@ class App extends JFrame {
     }
 
 
-    private JLabel getTextBox(){
-        Icon icon = new ImageIcon("imgs/textbox.gif");
+    /**
+     * Helper method for creating the text box on the main/transition screen.
+     * @param num Which text box image to use.
+     * @return JLabel with tex box image on it.
+     */
+    private JLabel getTextBox(int num){
+        Icon icon = null;
+        if(num == 0) icon = new ImageIcon("imgs/textbox.gif");
+        if(num == 1) icon = new ImageIcon("imgs/transition.gif");
         JLabel label = new JLabel();
         label.setIcon(icon);
         return label;
     }
 
 
+    /**
+     * Displays the main home page.
+     * @param backgroundLabel
+     * @param backgroundImage
+     */
     private void home(JLabel backgroundLabel, ImageIcon backgroundImage) {
         JPanel homePanel = new JPanel();
         homePanel.setLayout(null);
@@ -136,10 +152,9 @@ class App extends JFrame {
         titleLabel.setBounds(40, 0, titleImage.getIconWidth(), backgroundImage.getIconHeight()); */
 
         // Textbox image
-        JLabel tb = getTextBox();
+        JLabel tb = getTextBox(0);
         tb.setBounds(WIDTH/2 - 120, HEIGHT/2 + 100, 300, 126);
 
-        
         // Buttons to be displayed on the main home screen.
         JButton start = makeButton("START GAME");
         JButton select = makeButton("SELECT KEYS");
@@ -147,7 +162,7 @@ class App extends JFrame {
         select.setBounds(WIDTH/2 + 30, 580, 142, 35);
 
         // Laying out buttons in a top and bottom panel.
-        start.addActionListener((e) -> play());
+        start.addActionListener((e) -> levelOne());
         select.addActionListener((e) -> select(backgroundLabel, backgroundImage));
 
         // homePanel.add(titleLabel);
@@ -172,6 +187,11 @@ class App extends JFrame {
     }
 
 
+    /**
+     * Displays the select keys page.
+     * @param backgroundLabel
+     * @param backgroundImage
+     */
     private void select(JLabel backgroundLabel, ImageIcon backgroundImage) {
 
         JPanel selectPanel = new JPanel();
@@ -207,7 +227,6 @@ class App extends JFrame {
         }
         boxes.forEach((i) -> i.addActionListener(e -> defaultKeys[boxes.indexOf(i)] = Arrays.asList(options).indexOf(i.getSelectedItem())));
         
-
         selectPanel.add(back);
         selectPanel.add(backgroundLabel);
         add(selectPanel);
@@ -234,13 +253,66 @@ class App extends JFrame {
 
 
     /**
+     * Displays the transition panel between levels.
+     */
+    private void transition() {
+
+        ImageIcon backgroundImage = new ImageIcon("imgs/home_background0.png");
+        JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT, Img.home_background0, "foxchase");
+        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+
+        JPanel transitionPanel = new JPanel();
+        transitionPanel.setLayout(null);
+
+        // Textbox image
+        JLabel tb = getTextBox(1);
+        tb.setBounds(WIDTH/2 - 111, HEIGHT/2 + 20, 300, 126);
+
+        
+        // Buttons to be displayed on the main home screen.
+        JButton cont = makeButton("CONTINUE");
+        cont.setBounds(WIDTH/2 - 30, 500, 142, 35);
+        cont.addActionListener((e) -> levelTwo());
+
+        // homePanel.add(titleLabel);
+        transitionPanel.add(cont);
+        transitionPanel.add(tb);
+        transitionPanel.add(backgroundLabel);
+        this.add(transitionPanel);
+
+        this.setPreferredSize(new Dimension(backgroundImage.getIconWidth(), backgroundImage.getIconHeight()));
+        this.pack();
+        this.setVisible(true);
+
+        // To be executed when the home is closed.
+        closePhase.run();
+        closePhase = () -> {
+            remove(transitionPanel);
+            remove(cont);
+            remove(backgroundLabel);
+        };
+    }
+
+
+
+    /**
      * Executes when the start button is pressed.
      * Creates a new level and sets the phase to the current level.
      */
-    private void play() {
-        setPhase(Level.level(() -> win(), () -> lose(),
+    private void levelOne() {
+        setPhase(Level.level(() -> transition(), () -> lose(),
                 (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
                 getLevelEnemies(1), getLevelCollectables(1)));
+    }
+
+    /**
+     * Starts level two after level one is complete.
+     * Creates a new level and sets the phase to the current level.
+     */
+    private void levelTwo() {
+        setPhase(Level.level(() -> transition(), () -> lose(),
+                (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
+                getLevelEnemies(2), getLevelCollectables(2)));
     }
 
 
@@ -299,8 +371,19 @@ class App extends JFrame {
     }
 
 
+// --- GETTERS FOR LEVEL ENEMIES AND COLLECTABLES -------------------------------------------------------------------------------------------
+
+
     static ArrayList<Entity> getLevelEnemies(int level){
         if(level == 1){
+            return new ArrayList<>(List.of(
+            new Enemy(new Point(2, 2)), new Enemy(new Point(2, 14)),
+            new Enemy(new Point(14, 14)), new Enemy(new Point(14, 2)),
+            new Enemy(new Point(7, 2), new RoamingState()),
+            new Enemy(new Point(7, 14), new FollowState())
+            ));
+        }
+        else if(level == 2){
             return new ArrayList<>(List.of(
             new Enemy(new Point(2, 2)), new Enemy(new Point(2, 14)),
             new Enemy(new Point(14, 14)), new Enemy(new Point(14, 2)),
@@ -311,9 +394,19 @@ class App extends JFrame {
         return null;
     }
 
-    
+
     static ArrayList<Entity> getLevelCollectables(int level){
         if(level == 1){
+            return new ArrayList<>(List.of(
+            new Collectable(new Point(1, 1)), new Collectable(new Point(1, 15)),
+            new Collectable(new Point(15, 15)), new Collectable(new Point(15, 1)),
+            new Collectable(new Point(5, 5), new MovingCollectable()),
+            new Collectable(new Point(11, 11), new MovingCollectable()),
+            new Collectable(new Point(5, 11), new MovingCollectable()),
+            new Collectable(new Point(11, 5), new MovingCollectable())
+            ));
+        }
+        else if(level == 2){
             return new ArrayList<>(List.of(
             new Collectable(new Point(1, 1)), new Collectable(new Point(1, 15)),
             new Collectable(new Point(15, 15)), new Collectable(new Point(15, 1)),
