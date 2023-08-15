@@ -11,6 +11,27 @@ public interface CollectableState {
      * @param game  The current game.
      */
     void ping(Collectable c, Game game);
+
+    /**
+     * Checks if the collectable has been caught by the sprite.
+     */
+    default void checkCaught(Collectable c, Game game){
+        Point userArrow = game.getSprite().location().distance(c.location);
+        double userSize = ((Point) userArrow).size();
+        if (userSize < game.getSprite().closeness()) {
+            game.getSprite().grow();
+            game.remove(c);
+        }
+    }
+
+    /**
+     * Checks if the collectable should be drawn flipped.
+     * Not applicable for the StationaryCollectable.
+     */
+    default void checkFlipped(Collectable c, Game game){
+        double distance = c.getRandPoint().x() - c.location().x();
+        c.flipped = (distance > 0) ? false : true;
+    }
 }
 
 
@@ -19,15 +40,7 @@ public interface CollectableState {
  */
 record StationaryCollectable() implements CollectableState{
     @Override
-    public void ping(Collectable collectable, Game game){
-        // If the collectable has been picked up by the sprite
-        Point userArrow = game.getSprite().location().distance(collectable.location);
-        double userSize = ((Point) userArrow).size();
-        if (userSize < game.getSprite().closeness()) {
-            game.getSprite().grow();
-            game.remove(collectable);
-        }
-    }
+    public void ping(Collectable c, Game game){ checkCaught(c, game); }
 }
 
 
@@ -58,15 +71,8 @@ record MovingCollectable() implements CollectableState{
         c.location = c.location().add(arrow);
 
 
-        // If the collectable has been picked up by the sprite
-        Point userArrow = game.getSprite().location().distance(c.location);
-        double userSize = ((Point) userArrow).size();
-        if (userSize < game.getSprite().closeness()) {
-            game.getSprite().grow();
-            game.remove(c);
-        }
-        double distance = c.getRandPoint().x() - c.location().x();
-        c.flipped = (distance > 0) ? false : true;
+        checkCaught(c, game);
+        checkFlipped(c, game);
     }
 
 }
@@ -120,14 +126,8 @@ record EscapingCollectable() implements CollectableState{
 
 
         // If the collectable has been picked up by the sprite
-        Point userArrow = game.getSprite().location().distance(c.location);
-        double userSize = ((Point) userArrow).size();
-        if (userSize < game.getSprite().closeness()) {
-            game.getSprite().grow();
-            game.remove(c);
-        }
-        double distance = c.getRandPoint().x() - c.location().x();
-        c.flipped = (distance > 0) ? false : true;
+        checkCaught(c, game);
+        checkFlipped(c, game);
 }
 
 }
