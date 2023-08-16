@@ -5,45 +5,18 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Shape;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.geom.RoundRectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 
 import imgs.Img;
-
-import javax.swing.JButton;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.geom.RoundRectangle2D;
 
 class App extends JFrame {
 
@@ -70,7 +43,7 @@ class App extends JFrame {
      * Creates an App JPanel.
      */
     public App() {
-        assert SwingUtilities.isEventDispatchThread();
+        assert SwingUtilities.isEventDispatchThread();    
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
         setResizable(false);
@@ -81,14 +54,14 @@ class App extends JFrame {
         JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT, Img.home_background0, "");
         backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
 
-        transition();
-        // home(backgroundLabel, backgroundImage);
+        home(backgroundLabel, backgroundImage);
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 closePhase.run();
             }
         });
     }
+
 
 
     /**
@@ -147,7 +120,7 @@ class App extends JFrame {
         JPanel homePanel = new JPanel();
         homePanel.setLayout(null);
 
-        /* ImageIcon titleImage = new ImageIcon("imgs/title.png");
+        /*ImageIcon titleImage = new ImageIcon("imgs/title.png");
         JLabel titleLabel = new JLabel(titleImage);
         titleLabel.setBounds(40, 0, titleImage.getIconWidth(), backgroundImage.getIconHeight()); */
 

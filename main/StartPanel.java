@@ -56,7 +56,7 @@ public class StartPanel extends JLabel implements ActionListener {
         scaledPaint(g2d, 0.4, currSprite.image, spriteLocation, false);
         scaledPaint(g2d, 1, clouds[0].image, cloud0Location, cloudsFlipped[0]);
         scaledPaint(g2d, 1, clouds[1].image, cloud1Location, cloudsFlipped[1]);
-        // scaledPaint(g2d, 1, title.image, titleLocation, false);
+        scaledPaint(g2d, 1, title.image, titleLocation, false);
     }
 
 
@@ -109,7 +109,7 @@ public class StartPanel extends JLabel implements ActionListener {
             enemyAnimation();
         }
         cloudAnimation();
-        // titleAnimation();
+        titleAnimation();
         repaint();
     }
 
@@ -225,14 +225,14 @@ public class StartPanel extends JLabel implements ActionListener {
         cloudsSpeed[num] = (int)(Math.random() * 4) + 1;
     }
 
-    private Point titleLocation = new Point(200, 200);
-    private Img title = Img.Congrats;
+    private Point titleLocation = new Point(10, 8);
+    private Img title = Img.title;
     private int titleCounter;
 
     private void titleAnimation(){
-        if(titleCounter++ % 5 == 0){
-            if(titleLocation.y() == 200) titleLocation = new Point(titleLocation.x(), titleLocation.y() + 10);
-            else titleLocation = new Point(titleLocation.x(), titleLocation.y() - 10);
+        if(titleCounter++ % 4 == 0){
+            if(titleLocation.y() == 8) titleLocation = new Point(titleLocation.x(), titleLocation.y() + 8);
+            else titleLocation = new Point(titleLocation.x(), titleLocation.y() - 8);
         }
     }
 
