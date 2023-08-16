@@ -68,12 +68,18 @@ class Viewport extends JPanel {
                 - size.height / (double) (2 * Cell.renderY));
         Point center = center().add(centerP);
 
+        double lastX = 0.0;
+
         game.cells().performActionInRange(center().toCoord(), 50, cell -> cell.draw(g, center, size)); // Draws all cells.
         game.getEntities().forEach(e -> e.draw(g, center, size)); // Draws all the entities (sprites, enemies, collectables).
         game.getCollectables().forEach(e -> e.draw(g, center, size)); // Draws all the collectables.
         game.getSprite().draw(g, center, size);
         for (int i = 0; i < game.getHealth(); i++){
             drawImg(Img.heart.image, g, new Point(40 + (i * 45), 40), size, 2);
+            if(i == game.getHealth() - 1) lastX = 40 + (i * 45);
+        }
+        if(game.getHealth() == 5){
+            drawImg(Img.heartMessage.image, g, new Point(lastX + 100, 38), size, 2);
         }
         game.getTextBox().draw(g, center, size);
     }
