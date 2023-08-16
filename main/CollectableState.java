@@ -60,6 +60,9 @@ record StationaryCollectable() implements CollectableState{
  */
 record MovingCollectable() implements CollectableState{
 
+    /**
+     * Finds the distance between two Points using Manhattan distance.
+     */
     double findDistance(Point a, Point b){
         double distX = Math.abs(a.x() - b.x());
         double distY = Math.abs(a.y() - b.y());
@@ -88,16 +91,24 @@ record MovingCollectable() implements CollectableState{
  */
 record EscapingCollectable() implements CollectableState{
 
+    /**
+     * Finds the distance between two Points using Euclidian distance.
+     */
     double findDistance(Point a, Point b) {
         double distX = a.x() - b.x();
         double distY = a.y() - b.y();
         return Math.sqrt(distX * distX + distY * distY);
     }
 
-
+    /**
+     * Determines the next location for the collectable.
+     * Collectable should not run directly to the sprite.
+     * @param c
+     * @param game
+     */
     void findEscape(Collectable c, Game game){
         Point spriteLocation = game.getSprite().location();
-        double distanceThreshold = 5.0; // Adjust this threshold as needed
+        double distanceThreshold = 10.0; // The minimum distance from new location to sprite.
         Point randomPoint;
         do {
             randomPoint = new Point(Math.random() * 16, Math.random() * 16);
@@ -105,15 +116,19 @@ record EscapingCollectable() implements CollectableState{
         c.setRandPoint(randomPoint);
     }
 
+    /**
+     * If the collectable is close to the sprite, it can run faster.
+     */
     void adjustSpeed(Collectable c, Game game){
-        if(findDistance(c.location, c.getRandPoint()) < 6) c.setSpeed(0.12d);
+        double distanceThreshold = 6.0; // The minimum distance from new location to sprite.
+        if(findDistance(c.location, c.getRandPoint()) < distanceThreshold) c.setSpeed(0.12d);
         else c.setSpeed(0.09d);
     }
 
+
     @Override
     public void ping(Collectable c, Game game){
-
-        if (c.getTicks() == c.getRandTime() || findDistance(c.location, c.getRandPoint()) < 3) {
+        if (c.getTicks() == c.getRandTime() || findDistance(c.location, c.getRandPoint()) < 3 || findDistance(c.location, game.getSprite().location()) < 1) {
             findEscape(c, game); // Sets random point for collectable to follow
             c.setTicks(0);
         }

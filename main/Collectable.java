@@ -53,7 +53,7 @@ public class Collectable implements Entity {
         this.location = location;
         this.state = state;
         if(this.state instanceof EscapingCollectable){
-            this.randTime = Math.random() * 30;
+            this.randTime = Math.random() * 25;
         }
     }
 
