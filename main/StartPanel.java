@@ -4,8 +4,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -48,16 +46,40 @@ public class StartPanel extends JLabel implements ActionListener {
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(backgroundImg.image, 0, 0, null); // Background image
-        
+    
         // Draw each element in the StartPanel.
-        if(animation.equals("foxchase")) scaledPaint(g2d, 0.35, currEnemy.image, enemyLocation, false);
+        // Draw the sprite and the enemy based on the animation.
+        if (animation.equals("foxchase")) scaledPaint(g2d, 0.35, currEnemy.image, enemyLocation, false);
         else scaledPaint(g2d, 0.35, currEnemy.image, enemyLocation, true);
-
         scaledPaint(g2d, 0.4, currSprite.image, spriteLocation, false);
-        scaledPaint(g2d, 1, clouds[0].image, cloud0Location, cloudsFlipped[0]);
-        scaledPaint(g2d, 1, clouds[1].image, cloud1Location, cloudsFlipped[1]);
-        scaledPaint(g2d, 1, title.image, titleLocation, false);
+    
+        // Draw the clouds and the title based on the location of the clouds.
+        if(animation.equals("foxchase")){
+            scaledPaint(g2d, 1, clouds[0].image, cloud0Location, cloudsFlipped[0]);
+            scaledPaint(g2d, 1, clouds[1].image, cloud1Location, cloudsFlipped[1]);
+        } else{
+            determineCloudandTitle(g2d);
+        }
     }
+
+    public void determineCloudandTitle(Graphics2D g2d){
+        if (cloud0Location.y() > 280) {
+            scaledPaint(g2d, 1, title.image, titleLocation, false);
+            scaledPaint(g2d, 1, clouds[0].image, cloud0Location, cloudsFlipped[0]);
+        } else {
+            scaledPaint(g2d, 1, clouds[0].image, cloud0Location, cloudsFlipped[0]);
+            scaledPaint(g2d, 1, title.image, titleLocation, false);
+        }
+    
+        if (cloud1Location.y() > 280) {
+            scaledPaint(g2d, 1, title.image, titleLocation, false);
+            scaledPaint(g2d, 1, clouds[1].image, cloud1Location, cloudsFlipped[1]);
+        } else {
+            scaledPaint(g2d, 1, clouds[1].image, cloud1Location, cloudsFlipped[1]);
+            scaledPaint(g2d, 1, title.image, titleLocation, false);
+        }
+    }
+    
 
 
     /**
