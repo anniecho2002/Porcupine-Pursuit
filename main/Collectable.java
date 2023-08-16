@@ -26,7 +26,7 @@ public class Collectable implements Entity {
     /*
      * The speed that the collectable travels.
      */
-    public final double speed = 0.09d;
+    double speed = 0.09d;
 
     
     /**
@@ -35,10 +35,7 @@ public class Collectable implements Entity {
     int ticks = 0;
     double randTime = Math.random() * 50;
     Point randPoint = new Point(Math.random() * 16, Math.random() * 16);
-
     public boolean flipped = false;
-
-
 
 
     /**
@@ -55,6 +52,9 @@ public class Collectable implements Entity {
     public Collectable(Point location, CollectableState state){
         this.location = location;
         this.state = state;
+        if(this.state instanceof EscapingCollectable){
+            this.randTime = Math.random() * 30;
+        }
     }
 
 
@@ -75,6 +75,14 @@ public class Collectable implements Entity {
     /**
      * Retuns the location of the collectable.
      */
+
+
+    public int getTicks(){
+        return this.ticks;
+    }
+
+// --- GETTERS AND SETTERS ---------------------------------------------------------------------------------------------------------------
+
     @Override
     public Point location() {
         return this.location;
@@ -84,16 +92,16 @@ public class Collectable implements Entity {
         return this.speed;
     }
 
-    public int getTicks(){
-        return this.ticks;
-    }
-
-    public Point getRandPoint(){
-        return this.randPoint;
+    public void setSpeed(double speed){
+        this.speed = speed;
     }
 
     public void setTicks(int ticks){
         this.ticks = ticks;
+    }
+
+    public Point getRandPoint(){
+        return this.randPoint;
     }
 
     public void setRandPoint(Point randPoint){
@@ -103,6 +111,12 @@ public class Collectable implements Entity {
     public double getRandTime(){
         return this.randTime;
     }
+
+    public void setRandTime(double randTime){
+        this.randTime = randTime;
+    }
+
+
 
     
 }

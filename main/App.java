@@ -410,10 +410,10 @@ class App extends JFrame {
             return new ArrayList<>(List.of(
             new Collectable(new Point(1, 1)), new Collectable(new Point(1, 15)),
             new Collectable(new Point(15, 15)), new Collectable(new Point(15, 1)),
-            new Collectable(new Point(5, 5), new MovingCollectable()),
-            new Collectable(new Point(11, 11), new MovingCollectable()),
-            new Collectable(new Point(5, 11), new MovingCollectable()),
-            new Collectable(new Point(11, 5), new MovingCollectable())
+            new Collectable(new Point(5, 5), new EscapingCollectable()),
+            new Collectable(new Point(11, 11), new EscapingCollectable()),
+            new Collectable(new Point(5, 11), new EscapingCollectable()),
+            new Collectable(new Point(11, 5), new EscapingCollectable())
             ));
         }
         return null;

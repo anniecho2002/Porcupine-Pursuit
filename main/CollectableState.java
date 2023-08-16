@@ -32,6 +32,17 @@ public interface CollectableState {
         double distance = c.getRandPoint().x() - c.location().x();
         c.flipped = (distance > 0) ? false : true;
     }
+
+    /*
+     * Moves the collectable towards the given destination.
+     */
+    default void move(Collectable c, Game game, Point destination){
+        Point arrow = destination.distance(c.location());
+        arrow = arrow.times(c.speed() / arrow.size());
+        double size = ((Point) arrow).size();
+        arrow = ((Point) arrow).times(c.speed() / size);
+        c.location = c.location().add(arrow);
+    }
 }
 
 
@@ -64,13 +75,7 @@ record MovingCollectable() implements CollectableState{
             c.setTicks(0);
         }
         c.setTicks(c.getTicks() + 1);
-        Point arrow = c.getRandPoint().distance(c.location());
-        arrow = arrow.times(c.speed() / arrow.size());
-        double size = ((Point) arrow).size();
-        arrow = ((Point) arrow).times(c.speed() / size);
-        c.location = c.location().add(arrow);
-
-
+        move(c, game, c.getRandPoint());
         checkCaught(c, game);
         checkFlipped(c, game);
     }
@@ -83,51 +88,40 @@ record MovingCollectable() implements CollectableState{
  */
 record EscapingCollectable() implements CollectableState{
 
+    double findDistance(Point a, Point b) {
+        double distX = a.x() - b.x();
+        double distY = a.y() - b.y();
+        return Math.sqrt(distX * distX + distY * distY);
+    }
+
+
     void findEscape(Collectable c, Game game){
         Point spriteLocation = game.getSprite().location();
-        Point collectableLocation = c.location();
+        double distanceThreshold = 5.0; // Adjust this threshold as needed
+        Point randomPoint;
+        do {
+            randomPoint = new Point(Math.random() * 16, Math.random() * 16);
+        } while (findDistance(randomPoint, spriteLocation) < distanceThreshold);
+        c.setRandPoint(randomPoint);
+    }
 
-        double probability = 8;
-        if((Math.random() * probability) != 4){
-            c.setRandPoint(new Point(Math.random() * 16, Math.random() * 16));
-        }
-        // Collectable is on the left of the sprite
-        else if(spriteLocation.x() - collectableLocation.x() > 0){
-            c.setRandPoint(new Point(Math.random() * spriteLocation.x(), Math.random() * 16));
-        }
-        // Collectable is on the right side of the sprite
-        else if(spriteLocation.x() - collectableLocation.x() <= 0){
-            c.setRandPoint(new Point(Math.random() * 16, Math.random() * 16));
-        }
-        // Collectable is on the top of the 
-        else if(spriteLocation.y() - collectableLocation.y() > 0){
-            c.setRandPoint(new Point(Math.random() * 16, Math.random() * spriteLocation.y()));
-        }
-        else if(spriteLocation.y() - collectableLocation.y() <= 0){
-             c.setRandPoint(new Point(Math.random() * 16, Math.random() * 16));
-        }
-        
-        c.setTicks(0);
+    void adjustSpeed(Collectable c, Game game){
+        if(findDistance(c.location, c.getRandPoint()) < 6) c.setSpeed(0.12d);
+        else c.setSpeed(0.09d);
     }
 
     @Override
     public void ping(Collectable c, Game game){
 
-        if (c.getTicks() == c.getRandTime()) {
+        if (c.getTicks() == c.getRandTime() || findDistance(c.location, c.getRandPoint()) < 3) {
             findEscape(c, game); // Sets random point for collectable to follow
+            c.setTicks(0);
         }
-
-        // Move towards the random point that is chosen in findEscape()
         c.setTicks(c.getTicks() + 1);
-        Point arrow = c.getRandPoint().distance(c.location());
-        arrow = arrow.times(c.speed() / arrow.size());
-        double size = ((Point) arrow).size();
-        arrow = ((Point) arrow).times(c.speed() / size);
-
-
-        // If the collectable has been picked up by the sprite
+        adjustSpeed(c, game);
+        move(c, game, c.getRandPoint());
         checkCaught(c, game);
         checkFlipped(c, game);
-}
+    }
 
 }

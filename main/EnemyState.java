@@ -223,7 +223,7 @@ record FollowState() implements EnemyState {
     static int currWait = 0;
     static int currIndex = 0;
 
-            public void ping(Enemy enemy, Game game) {
+    public void ping(Enemy enemy, Game game) {
 
         // Determining which images to use in animation.
         Img[] enemyImages = enemy.walkImages;
