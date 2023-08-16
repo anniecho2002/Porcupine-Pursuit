@@ -23,6 +23,9 @@ public class Collectable implements Entity {
      */
     CollectableState state = new StationaryCollectable();
 
+
+    boolean scream = false;
+
     /*
      * The speed that the collectable travels.
      */
@@ -69,6 +72,10 @@ public class Collectable implements Entity {
     @Override
     public void draw(Graphics g, Point center, Dimension size) {
         drawImg(img.image, g, center, size, 3.5, flipped);
+        if(this.scream){
+            if(flipped) drawImg(Img.orangeScream.image, g, new Point(center.x() - 0.2, center.y() + 0.5), size, 4, false);
+            else drawImg(Img.orangeScream.image, g, new Point(center.x() + 0.2, center.y() + 0.5), size, 4, false);
+        }
     }
 
 
@@ -114,6 +121,10 @@ public class Collectable implements Entity {
 
     public void setRandTime(double randTime){
         this.randTime = randTime;
+    }
+
+    public void setScream(boolean b){
+        this.scream = b;
     }
 
 

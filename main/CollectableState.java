@@ -33,6 +33,7 @@ public interface CollectableState {
         c.flipped = (distance > 0) ? false : true;
     }
 
+
     /*
      * Moves the collectable towards the given destination.
      */
@@ -121,8 +122,21 @@ record EscapingCollectable() implements CollectableState{
      */
     void adjustSpeed(Collectable c, Game game){
         double distanceThreshold = 6.0; // The minimum distance from new location to sprite.
-        if(findDistance(c.location, c.getRandPoint()) < distanceThreshold) c.setSpeed(0.12d);
-        else c.setSpeed(0.09d);
+        if(findDistance(c.location, c.getRandPoint()) < distanceThreshold){
+            c.setSpeed(0.12d);
+        } else {
+            c.setSpeed(0.09d);
+        }
+    }
+
+    void checkScream(Collectable c, Game game){
+        double diffX = c.location.x() - game.getSprite().location().x();
+        double diffY = c.location.y() - game.getSprite().location().y();
+        if(Math.abs(diffX) < 2 && Math.abs(diffY) < 2){
+            c.setScream(true);
+        } else{
+            c.setScream(false);
+        }          
     }
 
 
@@ -136,6 +150,7 @@ record EscapingCollectable() implements CollectableState{
         adjustSpeed(c, game);
         move(c, game, c.getRandPoint());
         checkCaught(c, game);
+        checkScream(c, game);
         checkFlipped(c, game);
     }
 

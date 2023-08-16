@@ -54,7 +54,8 @@ class App extends JFrame {
         JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT, Img.home_background0, "");
         backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
 
-        home(backgroundLabel, backgroundImage);
+        transition();
+        //home(backgroundLabel, backgroundImage);
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 closePhase.run();
