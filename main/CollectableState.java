@@ -107,23 +107,27 @@ record EscapingCollectable() implements CollectableState{
      * @param c
      * @param game
      */
-    void findEscape(Collectable c, Game game){
-        Point spriteLocation = game.getSprite().location();
-        double distanceThreshold = 10.0; // The minimum distance from new location to sprite.
-        Point randomPoint;
-        do {
-            randomPoint = new Point(Math.random() * 16, Math.random() * 16);
-        } while (findDistance(randomPoint, spriteLocation) < distanceThreshold);
-        c.setRandPoint(randomPoint);
-    }
+void findEscape(Collectable c, Game game) {
+    Point spriteLocation = game.getSprite().location();
+    double distanceThreshold = 10.0; // The minimum distance from new location to sprite.
+    Point randomPoint;
+    double newX, newY;
+    do {
+        newX = Math.random() * 16;
+        newY = Math.random() * 16;
+        randomPoint = new Point(newX, newY);
+    } while (findDistance(randomPoint, spriteLocation) < distanceThreshold);
+    c.setRandPoint(randomPoint);
+}
+
 
     /**
      * If the collectable is close to the sprite, it can run faster.
      */
     void adjustSpeed(Collectable c, Game game){
-        double distanceThreshold = 6.0; // The minimum distance from new location to sprite.
-        if(findDistance(c.location, c.getRandPoint()) < distanceThreshold){
-            c.setSpeed(0.12d);
+        double distanceThreshold = 3.0; // The minimum distance from new location to sprite.
+        if(findDistance(c.location, game.getSprite().location()) < distanceThreshold){
+            c.setSpeed(0.15d);
         } else {
             c.setSpeed(0.09d);
         }
@@ -142,7 +146,7 @@ record EscapingCollectable() implements CollectableState{
 
     @Override
     public void ping(Collectable c, Game game){
-        if (c.getTicks() == c.getRandTime() || findDistance(c.location, c.getRandPoint()) < 3 || findDistance(c.location, game.getSprite().location()) < 1) {
+        if (c.getTicks() == c.getRandTime() || findDistance(c.location, c.getRandPoint()) < 3) {
             findEscape(c, game); // Sets random point for collectable to follow
             c.setTicks(0);
         }

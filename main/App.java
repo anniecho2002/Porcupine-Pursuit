@@ -50,65 +50,19 @@ class App extends JFrame {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setTitle("Porcupine Pursuit");
 
+        // Creating the background of the application now so animation is consistent between Home and Select.
         ImageIcon backgroundImage = new ImageIcon("imgs/home_background0.png");
         JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT, Img.home_background0, "");
         backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
 
-        transition();
-        //home(backgroundLabel, backgroundImage);
+        select(backgroundLabel, backgroundImage);
+        //transition();
+        // home(backgroundLabel, backgroundImage);
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 closePhase.run();
             }
         });
-    }
-
-
-
-    /**
-     * Helper method for creating JButtons.
-     * @param text Text to put inside JButton.
-     * @return JButton with color theme and font.
-     */
-    private JButton makeButton(String text) {
-        JButton temp = new JButton(text);
-        temp.setOpaque(true);
-        temp.setBorder(null);
-        temp.setForeground(COLOR_THEME);
-        temp.setFont(FONT_THEME);
-        temp.setBackground(new Color(250, 242, 210));
-        temp.setBorderPainted(true);
-        temp.setBorder(new RoundedBorder(10));
-        return temp;
-
-    }
-
-
-    /**
-     * Helper method for creating JLabels.
-     * @param text Text to put inside JLabel.
-     * @return JLabel with color theme and font.
-     */
-    private JLabel makeLabel(String text) {
-        JLabel temp = new JLabel(text);
-        temp.setForeground(Color.WHITE);
-        temp.setFont(FONT_THEME);
-        return temp;
-    }
-
-
-    /**
-     * Helper method for creating the text box on the main/transition screen.
-     * @param num Which text box image to use.
-     * @return JLabel with tex box image on it.
-     */
-    private JLabel getTextBox(int num){
-        Icon icon = null;
-        if(num == 0) icon = new ImageIcon("imgs/textbox.gif");
-        if(num == 1) icon = new ImageIcon("imgs/transition.gif");
-        JLabel label = new JLabel();
-        label.setIcon(icon);
-        return label;
     }
 
 
@@ -118,28 +72,24 @@ class App extends JFrame {
      * @param backgroundImage
      */
     private void home(JLabel backgroundLabel, ImageIcon backgroundImage) {
+
+        // Create panel to display on top of background.
         JPanel homePanel = new JPanel();
         homePanel.setLayout(null);
 
-        /*ImageIcon titleImage = new ImageIcon("imgs/title.png");
-        JLabel titleLabel = new JLabel(titleImage);
-        titleLabel.setBounds(40, 0, titleImage.getIconWidth(), backgroundImage.getIconHeight()); */
-
-        // Textbox image
+        // Textbox image to put on panel.
         JLabel tb = getTextBox(0);
         tb.setBounds(WIDTH/2 - 120, HEIGHT/2 + 100, 300, 126);
 
-        // Buttons to be displayed on the main home screen.
+        // Buttons to be displayed on the panel.
         JButton start = makeButton("START GAME");
         JButton select = makeButton("SELECT KEYS");
         start.setBounds(WIDTH/2 - 120, 580, 142, 35);
         select.setBounds(WIDTH/2 + 30, 580, 142, 35);
-
-        // Laying out buttons in a top and bottom panel.
         start.addActionListener((e) -> levelOne());
         select.addActionListener((e) -> select(backgroundLabel, backgroundImage));
 
-        // homePanel.add(titleLabel);
+        // Add and pack elements onto panel, then add panel to frame.
         homePanel.add(start);
         homePanel.add(select);
         homePanel.add(tb);
@@ -171,12 +121,6 @@ class App extends JFrame {
         JPanel selectPanel = new JPanel();
         selectPanel.setLayout(null);
 
-
-        ImageIcon titleImage = new ImageIcon("imgs/title.png");
-        JLabel titleLabel = new JLabel(titleImage);
-        titleLabel.setBounds(40, 0, titleImage.getIconWidth(), backgroundImage.getIconHeight());
-
-
         // Creating a back button that returns to home page.
         JButton back = makeButton("BACK TO HOME");
         back.setBounds(WIDTH/2 - 45, 580, 142, 35);
@@ -186,21 +130,19 @@ class App extends JFrame {
         // Creating the combo boxes for selecting new keys.
         ArrayList<JComboBox> boxes = new ArrayList<JComboBox>();
         ArrayList<JLabel> labels = new ArrayList<JLabel>();
-
-
         for (int i = 0; i < labelNames.length; i++) {
             boxes.add(new JComboBox(options));
             labels.add(makeLabel(labelNames[i]));
             boxes.get(i).setSelectedIndex(defaultKeys[i]);
-
-            labels.get(i).setBounds(80 + 200 * i, 540, 100, 50);
-            boxes.get(i).setBounds(130 + 200 * i, 540, 90, 50);
-            
+            labels.get(i).setBounds(100 + 200 * i, 420, 100, 50);
+            boxes.get(i).setBounds(150 + 200 * i, 420, 90, 50);
             selectPanel.add(labels.get(i));
             selectPanel.add(boxes.get(i));
         }
         boxes.forEach((i) -> i.addActionListener(e -> defaultKeys[boxes.indexOf(i)] = Arrays.asList(options).indexOf(i.getSelectedItem())));
         
+
+        // Add and pack elements onto the panel, then add panel to frame.
         selectPanel.add(back);
         selectPanel.add(backgroundLabel);
         add(selectPanel);
@@ -226,10 +168,13 @@ class App extends JFrame {
     }
 
 
+
     /**
-     * Displays the transition panel between levels.
+     * Displays the transition panel between level one and two.
+     * Creates a new StartPanel, as it will use a different animation.
+     * 1 for after level one, 2 for after level two, etc.
      */
-    private void transition() {
+    private void transition(int level) {
 
         ImageIcon backgroundImage = new ImageIcon("imgs/home_background0.png");
         JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT, Img.home_background0, "foxchase");
@@ -238,8 +183,79 @@ class App extends JFrame {
         JPanel transitionPanel = new JPanel();
         transitionPanel.setLayout(null);
 
+        // Textbox image --> depends on the level.
+        JLabel tb = getTextBox(level);
+        tb.setBounds(WIDTH/2 - 111, HEIGHT/2 + 20, 300, 126);
+
+        // Buttons to be displayed on the transition screen.
+        JButton cont = makeButton("CONTINUE");
+        cont.setBounds(WIDTH/2 - 30, 500, 142, 35);
+        cont.addActionListener((e) -> levelTwo());
+
+        // Add and pack elements onto the panel, then panel to frame.
+        transitionPanel.add(cont);
+        transitionPanel.add(tb);
+        transitionPanel.add(backgroundLabel);
+        this.add(transitionPanel);
+
+        this.setPreferredSize(new Dimension(backgroundImage.getIconWidth(), backgroundImage.getIconHeight()));
+        this.pack();
+        this.setVisible(true);
+
+        closePhase.run();
+        closePhase = () -> {
+            remove(transitionPanel);
+            remove(cont);
+            remove(backgroundLabel);
+        };
+    }
+
+
+    /**
+     * Executes when the start button is pressed.
+     * Creates a new level and sets the phase to the current level.
+     */
+    private void levelOne() {
+        setPhase(Level.level(() -> transition(1), () -> lose(),
+                (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
+                getLevelEnemies(1), getLevelCollectables(1)));
+    }
+
+    /**
+     * Starts level two after level one is complete.
+     * Creates a new level and sets the phase to the current level.
+     */
+    private void levelTwo() {
+        setPhase(Level.level(() -> transition(2), () -> lose(),
+                (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
+                getLevelEnemies(2), getLevelCollectables(2)));
+    }
+
+
+    /**
+     * Starts level three after level two is complete.
+     * Creates a new level and sets the phase to the current level.
+     */
+    private void levelThree() {
+        setPhase(Level.level(() -> win(), () -> lose(),
+                (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
+                getLevelEnemies(2), getLevelCollectables(2)));
+    }
+
+
+    /**
+     * Executes when the game is won. 
+     */
+    private void win() {
+        ImageIcon backgroundImage = new ImageIcon("imgs/home_background0.png");
+        JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT, Img.home_background0, "foxchase");
+        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+
+        JPanel transitionPanel = new JPanel();
+        transitionPanel.setLayout(null);
+
         // Textbox image
-        JLabel tb = getTextBox(1);
+        JLabel tb = getTextBox(2);
         tb.setBounds(WIDTH/2 - 111, HEIGHT/2 + 20, 300, 126);
 
         
@@ -248,7 +264,6 @@ class App extends JFrame {
         cont.setBounds(WIDTH/2 - 30, 500, 142, 35);
         cont.addActionListener((e) -> levelTwo());
 
-        // homePanel.add(titleLabel);
         transitionPanel.add(cont);
         transitionPanel.add(tb);
         transitionPanel.add(backgroundLabel);
@@ -265,38 +280,6 @@ class App extends JFrame {
             remove(cont);
             remove(backgroundLabel);
         };
-    }
-
-
-
-    /**
-     * Executes when the start button is pressed.
-     * Creates a new level and sets the phase to the current level.
-     */
-    private void levelOne() {
-        setPhase(Level.level(() -> transition(), () -> lose(),
-                (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
-                getLevelEnemies(1), getLevelCollectables(1)));
-    }
-
-    /**
-     * Starts level two after level one is complete.
-     * Creates a new level and sets the phase to the current level.
-     */
-    private void levelTwo() {
-        setPhase(Level.level(() -> transition(), () -> lose(),
-                (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
-                getLevelEnemies(2), getLevelCollectables(2)));
-    }
-
-
-    /**
-     * Executes when the game is won. 
-     */
-    private void win() {
-        add(BorderLayout.CENTER, new JLabel("Victory!"));
-        closePhase.run();
-        pack();
     }
 
 
@@ -345,27 +328,70 @@ class App extends JFrame {
     }
 
 
-// --- GETTERS FOR LEVEL ENEMIES AND COLLECTABLES -------------------------------------------------------------------------------------------
+// --- HELPER METHODS & GETTERS FOR ENEMIES/ COLLECTABLES -------------------------------------------------------------------------------------------
 
+    /**
+     * Helper method for creating JButtons.
+     * @param text Text to put inside JButton.
+     * @return JButton with color theme and font.
+     */
+    private JButton makeButton(String text) {
+        JButton temp = new JButton(text);
+        temp.setOpaque(true);
+        temp.setBorder(null);
+        temp.setForeground(COLOR_THEME);
+        temp.setFont(FONT_THEME);
+        temp.setBackground(new Color(250, 242, 210));
+        temp.setBorderPainted(true);
+        temp.setBorder(new RoundedBorder(10));
+        return temp;
+    }
 
+    /**
+     * Helper method for creating JLabels.
+     * @param text Text to put inside JLabel.
+     * @return JLabel with color theme and font.
+     */
+    private JLabel makeLabel(String text) {
+        JLabel temp = new JLabel(text);
+        temp.setForeground(COLOR_THEME);
+        temp.setFont(FONT_THEME);
+        return temp;
+    }
+
+    /**
+     * Helper method for creating the text box on the main/transition screens.
+     * @param num Which text box image to use.
+     * @return JLabel with text box image on it.
+     */
+    private JLabel getTextBox(int num){
+        Icon icon = new ImageIcon("imgs/textbox" + num + ".gif");
+        JLabel label = new JLabel();
+        label.setIcon(icon);
+        return label;
+    }
+
+    /**
+     * Given a certain level, return the list of enemies for the level.
+     * @param level Can be level 1, 2, or 3.
+     * @return A list of enemies for the level.
+     */
     static ArrayList<Entity> getLevelEnemies(int level){
         if(level == 1){
             return new ArrayList<>(List.of(
             new Enemy(new Point(2, 2)), new Enemy(new Point(2, 14)),
             new Enemy(new Point(14, 14)), new Enemy(new Point(14, 2)),
-            new Enemy(new Point(7, 2), new RoamingState()),
-            new Enemy(new Point(7, 14), new FollowState())
+            new Enemy(new Point(7, 2), new RoamingState()), new Enemy(new Point(7, 14), new FollowState())
             ));
         }
         else if(level == 2){
             return new ArrayList<>(List.of(
             new Enemy(new Point(2, 2)), new Enemy(new Point(2, 14)),
             new Enemy(new Point(14, 14)), new Enemy(new Point(14, 2)),
-            new Enemy(new Point(7, 2), new RoamingState()),
-            new Enemy(new Point(7, 14), new FollowState())
+            new Enemy(new Point(7, 2), new RoamingState()), new Enemy(new Point(7, 14), new FollowState())
             ));
         }
-        return null;
+        return new ArrayList<>();
     }
 
 
@@ -374,45 +400,39 @@ class App extends JFrame {
             return new ArrayList<>(List.of(
             new Collectable(new Point(1, 1)), new Collectable(new Point(1, 15)),
             new Collectable(new Point(15, 15)), new Collectable(new Point(15, 1)),
-            new Collectable(new Point(5, 5), new MovingCollectable()),
-            new Collectable(new Point(11, 11), new MovingCollectable()),
-            new Collectable(new Point(5, 11), new MovingCollectable()),
-            new Collectable(new Point(11, 5), new MovingCollectable())
+            new Collectable(new Point(5, 5), new MovingCollectable()), new Collectable(new Point(11, 11), new MovingCollectable()),
+            new Collectable(new Point(5, 11), new MovingCollectable()), new Collectable(new Point(11, 5), new MovingCollectable())
             ));
         }
         else if(level == 2){
             return new ArrayList<>(List.of(
             new Collectable(new Point(1, 1)), new Collectable(new Point(1, 15)),
             new Collectable(new Point(15, 15)), new Collectable(new Point(15, 1)),
-            new Collectable(new Point(5, 5), new EscapingCollectable()),
-            new Collectable(new Point(11, 11), new EscapingCollectable()),
-            new Collectable(new Point(5, 11), new EscapingCollectable()),
-            new Collectable(new Point(11, 5), new EscapingCollectable())
+            new Collectable(new Point(5, 5), new EscapingCollectable()), new Collectable(new Point(11, 11), new EscapingCollectable()),
+            new Collectable(new Point(5, 11), new EscapingCollectable()), new Collectable(new Point(11, 5), new EscapingCollectable())
             ));
         }
-        return null;
+        return new ArrayList<>();
     }
 }
+
+
+// --- MINOR CLASS FOR DRAWING ROUNDED BUTTONS -------------------------------------------------------------------------------------------
 
 class RoundedBorder implements Border {
 
     private int radius;
-
-
     RoundedBorder(int radius) {
         this.radius = radius;
     }
-
 
     public Insets getBorderInsets(Component c) {
         return new Insets(this.radius+1, this.radius+1, this.radius+2, this.radius);
     }
 
-
     public boolean isBorderOpaque() {
         return false;
     }
-
 
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
         g.drawRoundRect(x, y, width-1, height-1, radius, radius);
