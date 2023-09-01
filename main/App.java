@@ -51,10 +51,7 @@ class App extends JFrame {
         setTitle("Porcupine Pursuit");
 
         // Creating the background of the application now so animation is consistent between Home and Select.
-        //loadHome();
-
-
-        endGame(false);
+        loadHome();
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 closePhase.run();
