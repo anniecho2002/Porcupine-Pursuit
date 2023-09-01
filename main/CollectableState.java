@@ -101,24 +101,41 @@ record EscapingCollectable() implements CollectableState{
         return Math.sqrt(distX * distX + distY * distY);
     }
 
+    
+    Point findPoint(Point location, double radius){
+        double lowerX = location.x() - radius;
+        double upperX = location.x() + radius;
+        if(lowerX < 0) lowerX = 0;
+        if(upperX > 16) upperX = 16;
+
+        double lowerY = location.y() - radius;
+        double upperY = location.y() + radius;
+        if(lowerY < 0) lowerY = 0;
+        if(upperY > 16) upperY = 16;
+
+
+        double newX = lowerX + Math.random() * (upperX - lowerX);
+        double newY = lowerY + Math.random() * (upperY - lowerY);
+        return new Point(newX, newY);
+
+    }
+
     /**
      * Determines the next location for the collectable.
      * Collectable should not run directly to the sprite.
      * @param c
      * @param game
      */
-void findEscape(Collectable c, Game game) {
-    Point spriteLocation = game.getSprite().location();
-    double distanceThreshold = 10.0; // The minimum distance from new location to sprite.
-    Point randomPoint;
-    double newX, newY;
-    do {
-        newX = Math.random() * 16;
-        newY = Math.random() * 16;
-        randomPoint = new Point(newX, newY);
-    } while (findDistance(randomPoint, spriteLocation) < distanceThreshold);
-    c.setRandPoint(randomPoint);
-}
+    void findEscape(Collectable c, Game game) {
+        Point spriteLocation = game.getSprite().location();
+        double distanceThreshold = 10.0; // The minimum distance from new location to sprite.
+        Point randomPoint;
+        do {
+            //randomPoint = new Point(Math.random() * 16, Math.random() * 16);
+            randomPoint = findPoint(c.location(), 12);
+        } while (findDistance(randomPoint, spriteLocation) < distanceThreshold);
+        c.setRandPoint(randomPoint);
+    }
 
 
     /**
