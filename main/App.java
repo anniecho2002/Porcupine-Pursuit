@@ -51,18 +51,25 @@ class App extends JFrame {
         setTitle("Porcupine Pursuit");
 
         // Creating the background of the application now so animation is consistent between Home and Select.
-        ImageIcon backgroundImage = new ImageIcon("imgs/home_background0.png");
-        JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT, Img.home_background0, "");
-        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+        //loadHome();
 
-        select(backgroundLabel, backgroundImage);
-        //transition();
-        // home(backgroundLabel, backgroundImage);
+
+        endGame(false);
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 closePhase.run();
             }
         });
+    }
+
+    /**
+     * Creates the background of the application now so animation is consistent between Home and Select.
+     */
+    private void loadHome(){
+        ImageIcon backgroundImage = new ImageIcon("imgs/home_background0.png");
+        JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT, Img.home_background0, "");
+        backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+        home(backgroundLabel, backgroundImage);
     }
 
 
@@ -216,7 +223,7 @@ class App extends JFrame {
      * Creates a new level and sets the phase to the current level.
      */
     private void levelOne() {
-        setPhase(Level.level(() -> transition(1), () -> lose(),
+        setPhase(Level.level(() -> transition(1), () -> endGame(false),
                 (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
                 getLevelEnemies(1), getLevelCollectables(1)));
     }
@@ -224,9 +231,10 @@ class App extends JFrame {
     /**
      * Starts level two after level one is complete.
      * Creates a new level and sets the phase to the current level.
+     * CHANGE TO TRANSITION TWO WHEN IMPLEMENTED THIRD LEVEL.
      */
     private void levelTwo() {
-        setPhase(Level.level(() -> transition(2), () -> lose(),
+        setPhase(Level.level(() -> endGame(true), () -> endGame(false),
                 (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
                 getLevelEnemies(2), getLevelCollectables(2)));
     }
@@ -237,7 +245,7 @@ class App extends JFrame {
      * Creates a new level and sets the phase to the current level.
      */
     private void levelThree() {
-        setPhase(Level.level(() -> win(), () -> lose(),
+        setPhase(Level.level(() -> endGame(true), () -> endGame(false),
                 (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
                 getLevelEnemies(2), getLevelCollectables(2)));
     }
@@ -246,28 +254,30 @@ class App extends JFrame {
     /**
      * Executes when the game is won. 
      */
-    private void win() {
+    private void endGame(boolean win) {
         ImageIcon backgroundImage = new ImageIcon("imgs/home_background0.png");
-        JLabel backgroundLabel = new StartPanel(WIDTH, HEIGHT, Img.home_background0, "foxchase");
+        JLabel backgroundLabel = new EndPanel(WIDTH, HEIGHT, Img.home_background0, win);
         backgroundLabel.setBounds(0, 0, backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
 
-        JPanel transitionPanel = new JPanel();
-        transitionPanel.setLayout(null);
+        JPanel endPanel = new JPanel();
+        endPanel.setLayout(null);
 
         // Textbox image
-        JLabel tb = getTextBox(2);
+        JLabel tb = new JLabel();
+        if(!win) tb = getTextBox(3); // Display loss textbox
+        else tb = getTextBox(4);     // Display win textbox
         tb.setBounds(WIDTH/2 - 111, HEIGHT/2 + 20, 300, 126);
 
         
         // Buttons to be displayed on the main home screen.
-        JButton cont = makeButton("CONTINUE");
-        cont.setBounds(WIDTH/2 - 30, 500, 142, 35);
-        cont.addActionListener((e) -> levelTwo());
+        JButton back = makeButton("BACK TO HOME");
+        back.setBounds(WIDTH/2 - 30, 500, 142, 35);
+        back.addActionListener((e) -> loadHome());
 
-        transitionPanel.add(cont);
-        transitionPanel.add(tb);
-        transitionPanel.add(backgroundLabel);
-        this.add(transitionPanel);
+        endPanel.add(back);
+        endPanel.add(tb);
+        endPanel.add(backgroundLabel);
+        this.add(endPanel);
 
         this.setPreferredSize(new Dimension(backgroundImage.getIconWidth(), backgroundImage.getIconHeight()));
         this.pack();
@@ -276,20 +286,10 @@ class App extends JFrame {
         // To be executed when the home is closed.
         closePhase.run();
         closePhase = () -> {
-            remove(transitionPanel);
-            remove(cont);
+            remove(endPanel);
+            remove(back);
             remove(backgroundLabel);
         };
-    }
-
-
-    /**
-     * Executes when the game is lost. 
-     */
-    private void lose() {
-        add(BorderLayout.CENTER, new JLabel("Loss!"));
-        closePhase.run();
-        pack();
     }
 
 
@@ -361,6 +361,11 @@ class App extends JFrame {
 
     /**
      * Helper method for creating the text box on the main/transition screens.
+     * 0 = home page
+     * 1 = transition 1
+     * 2 = transition 2
+     * 3 = loss
+     * 4 = win
      * @param num Which text box image to use.
      * @return JLabel with text box image on it.
      */

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
 public enum Img{
-  home_background0, home_background1, title,
+  home_background0, home_background1, title, blackBackground,
   heart, heartMessage, 
   orange, orangeScream, 
   cloud0, cloud1,

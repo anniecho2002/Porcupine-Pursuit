@@ -45,7 +45,6 @@ public class EndPanel extends JLabel implements ActionListener {
         g2d.drawImage(backgroundImg.image, 0, 0, null);
         scaledPaint(g2d, 1, clouds[0].image, cloud0Location, cloudsFlipped[0]);
         scaledPaint(g2d, 1, clouds[1].image, cloud1Location, cloudsFlipped[1]);
-        scaledPaint(g2d, 1, title.image, titleLocation, false);
     }
     
 
@@ -92,7 +91,13 @@ public class EndPanel extends JLabel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         cloudAnimation();
-        titleAnimation();
+        if(this.win){
+            spriteWinAnimation();
+            enemyWinAnimation();
+        } else{
+            spriteLoseAnimation();
+            enemyLoseAnimation();
+        }
         repaint();
     }
 
@@ -137,31 +142,29 @@ public class EndPanel extends JLabel implements ActionListener {
      * If the cloud is now offscreen, randomize the image, flip, and speed
      */
     private void randomize(int num){
-
-        // Randomizing the cloud image
         if((int)(Math.random() * 2) == 1) clouds[num] = Img.cloud0;
         else clouds[num] = Img.cloud1;
-
-        // Randomizing the flip of the image
         if((int)(Math.random() * 2) == 1) cloudsFlipped[num] = true;
         else cloudsFlipped[num] = false;
-
-        // Randomizing the speed of the image
         cloudsSpeed[num] = (int)(Math.random() * 4) + 1;
     }
 
-    private Point titleLocation = new Point(10, 8);
-    private Img title = Img.title;
-    private int titleCounter;
+/*------ DRAWING THE ANIMATIONS -------------------------------------------------------------------------------------------------- */
 
-    private void titleAnimation(){
-        if(titleCounter++ % 4 == 0){
-            if(titleLocation.y() == 8) titleLocation = new Point(titleLocation.x(), titleLocation.y() + 8);
-            else titleLocation = new Point(titleLocation.x(), titleLocation.y() - 8);
-        }
+    private void spriteWinAnimation(){
+
     }
 
-/*------ DRAWING THE CHASE ANIMATIONS -------------------------------------------------------------------------------------------------- */
+    private void enemyWinAnimation(){
+        
+    }
 
+    private void spriteLoseAnimation(){
+
+    }
+
+    private void enemyLoseAnimation(){
+        
+    }
 
 }
