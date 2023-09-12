@@ -38,7 +38,7 @@ class Enemy implements Entity {
     /**
      * The speed of which the enemy travels.
      */
-    public final double speed = 0.06d;
+    public double speed = 0.06d;
 
     /**
      * Returns the speed of the enemy.
@@ -74,6 +74,17 @@ class Enemy implements Entity {
     }
 
     /**
+     * Creates an enemy at a given location and speed.
+     * 
+     * @param location
+     */
+    Enemy(Point location, double speed) {
+        this.location = location;
+        this.originalLocation = location;
+        this.speed = speed;
+    }
+
+    /**
      * Creates an enemy at a given location and a given state.
      * 
      * @param location
@@ -84,6 +95,21 @@ class Enemy implements Entity {
         this.originalLocation = location;
         this.state = s;
         this.originalState = s;
+    }
+
+
+    /**
+     * Creates an enemy at a given location, state, and speed.
+     * 
+     * @param location
+     * @param s
+     */
+    Enemy(Point location, EnemyState s, double speed) {
+        this.location = location;
+        this.originalLocation = location;
+        this.state = s;
+        this.originalState = s;
+        this.speed = speed;
     }
 
     /**

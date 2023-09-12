@@ -52,7 +52,7 @@ class App extends JFrame {
 
         // Creating the background of the application now so animation is consistent between Home and Select.
         loadHome();
-        levelTwo();
+        levelThree();
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 closePhase.run();
@@ -245,7 +245,7 @@ class App extends JFrame {
     private void levelThree() {
         setPhase(Level.level(() -> endGame(true), () -> endGame(false),
                 (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
-                getLevelEnemies(2), getLevelCollectables(2), 3));
+                getLevelEnemies(3), getLevelCollectables(3), 3));
     }
 
 
@@ -394,6 +394,13 @@ class App extends JFrame {
             new Enemy(new Point(7, 2), new RoamingState()), new Enemy(new Point(7, 14), new FollowState())
             ));
         }
+        else if(level == 3){
+            return new ArrayList<>(List.of(
+            new Enemy(new Point(2, 2), 0.07d), new Enemy(new Point(2, 14), 0.07d),
+            new Enemy(new Point(14, 14), 0.07d), new Enemy(new Point(14, 2), 0.07d),
+            new Enemy(new Point(7, 2), new RoamingState(), 0.065d), new Enemy(new Point(7, 14), new FollowState(), 0.065d)
+            ));
+        }
         return new ArrayList<>();
     }
 
@@ -412,6 +419,13 @@ class App extends JFrame {
             new Collectable(new Point(1, 1)), new Collectable(new Point(1, 15)),
             new Collectable(new Point(5, 5), new EscapingCollectable()), new Collectable(new Point(11, 11), new EscapingCollectable()),
             new Collectable(new Point(5, 11), new EscapingCollectable()), new Collectable(new Point(11, 5), new EscapingCollectable())
+            ));
+        }
+        else if(level == 3){
+            return new ArrayList<>(List.of(
+            new Collectable(new Point(1, 1)), new Collectable(new Point(1, 15)),
+            new Collectable(new Point(8, 4), new EscapingCollectable()), new Collectable(new Point(8, 12), new EscapingCollectable()),
+            new Collectable(new Point(4, 8), new EscapingCollectable()), new Collectable(new Point(12, 8), new EscapingCollectable())
             ));
         }
         return new ArrayList<>();

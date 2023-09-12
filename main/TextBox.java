@@ -38,6 +38,7 @@ public class TextBox {
         if(visible){
             if(level == 1) drawImg(Img.levelone.image, g, center, size, 4);
             if(level == 2) drawImg(Img.leveltwo.image, g, center, size, 4);
+            if(level == 3) drawImg(Img.levelthree.image, g, center, size, 4);
         }
     }
 
