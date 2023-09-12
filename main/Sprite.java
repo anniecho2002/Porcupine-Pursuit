@@ -53,7 +53,7 @@ class Sprite extends ControllableDirection implements Entity{
 
   // Left size is smaller fox, right side is bigger fox.
   private double[] growthSize = {5.0, 4.4, 3.8, 3.2, 2.6};
-  private double[] closeness = {0.3, 0.4, 0.5, 0.6, 0.7};
+  private double[] closeness = {0.38, 0.4, 0.5, 0.6, 0.7};
   private double[] speed = {0.1, 0.1025, 0.1025, 0.105, 0.105};
   private int growthIndex = 0;
   

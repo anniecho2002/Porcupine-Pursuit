@@ -223,7 +223,7 @@ class App extends JFrame {
     private void levelOne() {
         setPhase(Level.level(() -> transition(1), () -> endGame(false),
                 (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
-                getLevelEnemies(1), getLevelCollectables(1)));
+                getLevelEnemies(1), getLevelCollectables(1), 1));
     }
 
     /**
@@ -234,7 +234,7 @@ class App extends JFrame {
     private void levelTwo() {
         setPhase(Level.level(() -> endGame(true), () -> endGame(false),
                 (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
-                getLevelEnemies(2), getLevelCollectables(2)));
+                getLevelEnemies(2), getLevelCollectables(2), 2));
     }
 
 
@@ -245,7 +245,7 @@ class App extends JFrame {
     private void levelThree() {
         setPhase(Level.level(() -> endGame(true), () -> endGame(false),
                 (options[defaultKeys[0]] + options[defaultKeys[1]] + options[defaultKeys[2]] + options[defaultKeys[3]]).toCharArray(),
-                getLevelEnemies(2), getLevelCollectables(2)));
+                getLevelEnemies(2), getLevelCollectables(2), 3));
     }
 
 
@@ -410,7 +410,6 @@ class App extends JFrame {
         else if(level == 2){
             return new ArrayList<>(List.of(
             new Collectable(new Point(1, 1)), new Collectable(new Point(1, 15)),
-            new Collectable(new Point(15, 15)), new Collectable(new Point(15, 1)),
             new Collectable(new Point(5, 5), new EscapingCollectable()), new Collectable(new Point(11, 11), new EscapingCollectable()),
             new Collectable(new Point(5, 11), new EscapingCollectable()), new Collectable(new Point(11, 5), new EscapingCollectable())
             ));

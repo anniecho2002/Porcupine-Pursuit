@@ -11,7 +11,7 @@ import java.util.List;
  */
 record Level(Game game, Controller controller){ 
   
-  static Level level(Runnable onWin, Runnable onLose, char[] keyCodes, ArrayList<Entity> monsters, ArrayList<Entity> collectables) {
+  static Level level(Runnable onWin, Runnable onLose, char[] keyCodes, ArrayList<Entity> monsters, ArrayList<Entity> collectables, int level) {
     
     // Setting up the sprite, controller, and map.
     Sprite sprite = new Sprite(new Point(8,8));
@@ -19,7 +19,7 @@ record Level(Game game, Controller controller){
     Map cells = new Map();
 
     // Other elements for visual effect.
-    TextBox tb = new TextBox(new Point(8, 9.5));
+    TextBox tb = new TextBox(new Point(8, 9.5), level);
 
     // Creating a new Level object to return.
     Game game = new Game(sprite, monsters, collectables, cells, onWin, onLose, tb);

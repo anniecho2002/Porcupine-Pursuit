@@ -9,7 +9,7 @@ public enum Img{
   heart, heartMessage, 
   orange, orangeScream, 
   cloud0, cloud1,
-  levelone,
+  levelone, leveltwo,
   grass0, grass1, grass2, grass3, grass4, 
   bush0, bush1, bush2, bush3, bush4,
   foxIdle0, foxIdle1, foxIdle2, foxIdle3, foxIdle4,

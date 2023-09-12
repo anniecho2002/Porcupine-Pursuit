@@ -10,10 +10,12 @@ public class TextBox {
     
     private Point location;
     private boolean visible;
+    private int level;
 
-    public TextBox(Point location){
+    public TextBox(Point location, int level){
         this.location = location;
         this.visible = true;
+        this.level = level;
     }
 
     public void setInvisible(){
@@ -33,7 +35,10 @@ public class TextBox {
     }
 
     void draw(Graphics g, Point center, Dimension size){
-        if(visible) drawImg(Img.levelone.image, g, center, size, 4);
+        if(visible){
+            if(level == 1) drawImg(Img.levelone.image, g, center, size, 4);
+            if(level == 2) drawImg(Img.leveltwo.image, g, center, size, 4);
+        }
     }
 
 
