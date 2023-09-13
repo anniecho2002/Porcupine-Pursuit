@@ -52,7 +52,6 @@ class App extends JFrame {
 
         // Creating the background of the application now so animation is consistent between Home and Select.
         loadHome();
-        levelThree();
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 closePhase.run();
